@@ -76,6 +76,6 @@ if [ -f "configure" ]; then
         --dest-os=android \
         --without-snapshot \
         --openssl-no-asm \
-        --shared \
-        --without-intl
+        --without-intl \
+        --shared
 fi
