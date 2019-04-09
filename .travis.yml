@@ -8,13 +8,6 @@ env:
     - ARTIFACTS_ROOT_DIR="node_artifacts_dir"
     - ARTIFACTS_DIR=$ARTIFACTS_ROOT_DIR/$REPO_NAME/$TRAVIS_BRANCH/$TRAVIS_JOB_NUMBER
 
-# addons:
-#   apt:
-#     sources:
-#       - ubuntu-toolchain-r-test
-#     packages:
-#       - g++-4.9
-
 notifications:
   email:
     on_success: always
@@ -40,7 +33,7 @@ before_install:
     esac
 
 install:
-  - source ./android-configure $ANDROID_NDK_HOME
+  - source ./android-configure $ANDROID_NDK_HOME $TARGET_ARCH
   - make V= -j $(getconf _NPROCESSORS_ONLN)
 
 script: skip
