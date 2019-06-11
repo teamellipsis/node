@@ -1,27 +1,53 @@
 language: cpp
-sudo: false
 cache: ccache
 os: linux
-matrix:
-  include:
-    - name: "Linter"
-      node_js: "latest"
-      env:
-        - NODE=$(which node)
-      script:
-        - make lint
-        # Lint the first commit in the PR.
-        - \[ -z "$TRAVIS_COMMIT_RANGE" \] || (echo -e '\nLinting the commit message according to the guidelines at https://goo.gl/p2fr5Q\n' && git log $TRAVIS_COMMIT_RANGE --pretty=format:'%h' --no-merges | tail -1 | xargs npx -q core-validate-commit --no-validate-metadata)
-    - name: "Test Suite"
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-4.9
-      install:
-        - export CC='ccache gcc-4.9' CXX='ccache g++-4.9' JOBS=2
-        - ./configure
-        - make -j2 V=
-      script:
-        - PARALLEL_ARGS='--flaky-tests=skip' make -j1 test
+
+env:
+  global:
+    - REPO_NAME="node"
+    - ARTIFACTS_ROOT_DIR="node_artifacts_dir"
+    - ARTIFACTS_DIR=$ARTIFACTS_ROOT_DIR/$REPO_NAME/$TRAVIS_BRANCH/$TRAVIS_JOB_NUMBER
+
+notifications:
+  email:
+    on_success: always
+
+before_install:
+  - curl https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip -o ndk.zip
+  - unzip -qq ndk.zip -d $HOME
+  - export ANDROID_NDK_HOME=$HOME/android-ndk-r18b
+  - |
+    case $ARCH in
+      arm)
+        export TARGET_ARCH="arm"
+        ;;
+      x86)
+        export TARGET_ARCH="x86"
+        ;;
+      x86_64)
+        export TARGET_ARCH="x86_64"
+        ;;
+      *)
+        export TARGET_ARCH="arm64"
+        ;;
+    esac
+
+install:
+  - source ./android-configure $ANDROID_NDK_HOME $TARGET_ARCH
+  - make V= -j $(getconf _NPROCESSORS_ONLN)
+
+script: skip
+
+before_deploy:
+  - mkdir -p $ARTIFACTS_DIR
+  - cp -r out/Release/lib.target $ARTIFACTS_DIR
+
+deploy:
+  provider: s3
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+  bucket: $S3_Bucket
+  skip_cleanup: true
+  local_dir: $ARTIFACTS_ROOT_DIR
+  on:
+    all_branches: true
