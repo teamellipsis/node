@@ -1,0 +1,68 @@
+diff --git a/android-configure b/android-configure
+index 59f0a40c1a..eff22650eb 100755
+--- a/android-configure
++++ b/android-configure
+@@ -75,5 +75,7 @@ if [ -f "configure" ]; then
+         --dest-cpu=$DEST_CPU \
+         --dest-os=android \
+         --without-snapshot \
+-        --openssl-no-asm
++        --openssl-no-asm \
++        --shared \
++        --without-intl
+ fi
+diff --git a/common.gypi b/common.gypi
+index b423c9a61a..c9f68688fc 100644
+--- a/common.gypi
++++ b/common.gypi
+@@ -103,8 +103,8 @@
+             ],
+           }],
+           ['OS == "android"', {
+-            'cflags': [ '-fPIE' ],
+-            'ldflags': [ '-fPIE', '-pie' ]
++            'cflags': [ '-fPIC' ],
++            'ldflags': [ '-fPIC', '-pie' ]
+           }],
+           ['node_shared=="true"', {
+             'msvs_settings': {
+@@ -157,8 +157,8 @@
+             'cflags': [ '-fno-omit-frame-pointer' ],
+           }],
+           ['OS == "android"', {
+-            'cflags': [ '-fPIE' ],
+-            'ldflags': [ '-fPIE', '-pie' ]
++            'cflags': [ '-fPIC' ],
++            'ldflags': [ '-fPIC', '-pie' ]
+           }],
+           ['node_shared=="true"', {
+             'msvs_settings': {
+diff --git a/configure b/configure
+index ceb04f7998..24f6124d8f 100755
+--- a/configure
++++ b/configure
+@@ -970,9 +970,9 @@ def configure_node(o):
+   elif sys.platform.startswith('aix'):
+     shlib_suffix = '%s.a'
+   else:
+-    shlib_suffix = 'so.%s'
++    shlib_suffix = 'so'
+ 
+-  shlib_suffix %= node_module_version
++  # shlib_suffix %= node_module_version
+   o['variables']['node_module_version'] = int(node_module_version)
+   o['variables']['shlib_suffix'] = shlib_suffix
+ 
+diff --git a/deps/cares/config/android/ares_config.h b/deps/cares/config/android/ares_config.h
+index 9e6ef3cade..6577a29549 100644
+--- a/deps/cares/config/android/ares_config.h
++++ b/deps/cares/config/android/ares_config.h
+@@ -116,7 +116,7 @@
+ #define HAVE_GETNAMEINFO 1
+ 
+ /* Define to 1 if you have the getservbyport_r function. */
+-#define HAVE_GETSERVBYPORT_R 1
++// #define HAVE_GETSERVBYPORT_R 1
+ 
+ /* Define to 1 if you have the `gettimeofday' function. */
+ #define HAVE_GETTIMEOFDAY 1

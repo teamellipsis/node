@@ -1,0 +1,26 @@
+diff --git a/common.gypi b/common.gypi
+index b423c9a61a..c9f68688fc 100644
+--- a/common.gypi
++++ b/common.gypi
+@@ -103,8 +103,8 @@
+             ],
+           }],
+           ['OS == "android"', {
+-            'cflags': [ '-fPIE' ],
+-            'ldflags': [ '-fPIE', '-pie' ]
++            'cflags': [ '-fPIC' ],
++            'ldflags': [ '-fPIC', '-pie' ]
+           }],
+           ['node_shared=="true"', {
+             'msvs_settings': {
+@@ -157,8 +157,8 @@
+             'cflags': [ '-fno-omit-frame-pointer' ],
+           }],
+           ['OS == "android"', {
+-            'cflags': [ '-fPIE' ],
+-            'ldflags': [ '-fPIE', '-pie' ]
++            'cflags': [ '-fPIC' ],
++            'ldflags': [ '-fPIC', '-pie' ]
+           }],
+           ['node_shared=="true"', {
+             'msvs_settings': {

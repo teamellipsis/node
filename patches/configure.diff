@@ -1,0 +1,16 @@
+diff --git a/configure b/configure
+index ceb04f7998..24f6124d8f 100755
+--- a/configure
++++ b/configure
+@@ -970,9 +970,9 @@ def configure_node(o):
+   elif sys.platform.startswith('aix'):
+     shlib_suffix = '%s.a'
+   else:
+-    shlib_suffix = 'so.%s'
++    shlib_suffix = 'so'
+ 
+-  shlib_suffix %= node_module_version
++  # shlib_suffix %= node_module_version
+   o['variables']['node_module_version'] = int(node_module_version)
+   o['variables']['shlib_suffix'] = shlib_suffix
+ 

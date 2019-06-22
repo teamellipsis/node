@@ -1,0 +1,13 @@
+diff --git a/android-configure b/android-configure
+index 59f0a40c1a..eff22650eb 100755
+--- a/android-configure
++++ b/android-configure
+@@ -75,5 +75,7 @@ if [ -f "configure" ]; then
+         --dest-cpu=$DEST_CPU \
+         --dest-os=android \
+         --without-snapshot \
+-        --openssl-no-asm
++        --openssl-no-asm \
++        --shared \
++        --without-intl
+ fi
